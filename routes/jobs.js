@@ -1,10 +1,11 @@
+// routes/jobs.js
 import express from "express";
-import pool from "./../db.js";
+import pool from "../db.js"; // Korrekt relativ väg från routes till db.js
 
 const router = express.Router();
 
 // Hämta alla jobb
-router.get("/", async (req, res) => {
+router.get("/", async (req, res) => { // OBS: "/" inte "/jobs"
   try {
     const result = await pool.query("SELECT * FROM jobs ORDER BY end_date ASC");
     res.json(result.rows);
@@ -15,7 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 // Lägg till ett nytt jobb
-router.post("/", async (req, res) => {
+router.post("/", async (req, res) => { // OBS: "/" inte "/jobs"
   const { title, link, description, category, end_date } = req.body;
   try {
     const result = await pool.query(
@@ -30,7 +31,7 @@ router.post("/", async (req, res) => {
 });
 
 // Ta bort jobb
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => { // OBS: "/:id" inte "/jobs/:id"
   const { id } = req.params;
   try {
     await pool.query("DELETE FROM jobs WHERE id = $1", [id]);
