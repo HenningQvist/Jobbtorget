@@ -1,7 +1,7 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import jobsRouter from "./routes/jobs.js";
 
 dotenv.config();
@@ -15,9 +15,8 @@ app.use(express.json());
 // API routes
 app.use("/jobs", jobsRouter);
 
-// Root route
 app.get("/", (req, res) => {
-  res.send("🚀 Backend är igång på Railway på port " + PORT);
+  res.send("🚀 Backend är igång!");
 });
 
 app.listen(PORT, () => {
