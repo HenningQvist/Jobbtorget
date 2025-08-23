@@ -1,6 +1,6 @@
 // routes/jobs.js
 import express from "express";
-import pool from "../db.js"; // Korrekt relativ väg från routes till db.js
+import pool from "../db.js"; 
 
 const router = express.Router();
 
