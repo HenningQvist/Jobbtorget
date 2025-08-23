@@ -7,15 +7,19 @@ import jobsRouter from "./routes/jobs.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
 
-
 // API routes
 app.use("/jobs", jobsRouter);
 
-app.listen(port, () => {
-  console.log(`✅ Servern kör på http://localhost:${port}`);
+// Root route
+app.get("/", (req, res) => {
+  res.send("🚀 Backend är igång på Railway på port " + PORT);
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ Servern kör på port ${PORT}`);
 });

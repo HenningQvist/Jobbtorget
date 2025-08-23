@@ -1,6 +1,7 @@
 {
   "name": "cv-builder",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "description": "CV Builder app",
   "author": "Ditt Namn",
