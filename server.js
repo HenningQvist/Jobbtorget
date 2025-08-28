@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import documentsRouter from "./routes/documents.js";
 import jobsRouter from "./routes/jobs.js"; 
 import pool from "./db.js"; // importera din databas-pool
 
@@ -12,6 +12,10 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
+
+
+// 🟢 Middleware för att tolka urlencoded form data (t.ex. från HTML forms)
+app.use(express.urlencoded({ extended: true }));
 
 // 🔹 Startlogg
 console.log("🚀 Startar backend...");
@@ -52,6 +56,7 @@ app.get("/dbtest", async (req, res) => {
 
 // Alla requests till /jobs går till jobsRouter
 app.use("/jobs", jobsRouter);
+app.use("/documents", documentsRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Servern kör på port ${PORT}`);
