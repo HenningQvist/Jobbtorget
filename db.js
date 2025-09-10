@@ -24,4 +24,22 @@ if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
   });
 }
 
+// Initiera activities-tabellen om den inte finns
+export const initActivitiesTable = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS activities (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        category VARCHAR(50) NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    console.log("✅ Tabellen 'activities' finns nu eller har skapats");
+  } catch (err) {
+    console.error("❌ Kunde inte skapa tabellen 'activities':", err);
+  }
+};
+
 export default pool;
