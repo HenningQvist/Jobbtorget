@@ -17,11 +17,11 @@ router.get("/", async (req, res) => {
 
 // Lägg till en ny aktivitet
 router.post("/", async (req, res) => {
-  const { title, description, category, language } = req.body;
+  const { title, description, category } = req.body; // ta bort language
   try {
     const result = await pool.query(
-      "INSERT INTO activities (title, description, category, language) VALUES ($1, $2, $3, $4) RETURNING *",
-      [title, description, category, language]
+      "INSERT INTO activities (title, description, category) VALUES ($1, $2, $3) RETURNING *",
+      [title, description, category]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Kunde inte spara aktiviteten" });
   }
 });
+
 
 // Ta bort aktivitet
 router.delete("/:id", async (req, res) => {
