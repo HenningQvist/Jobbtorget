@@ -8,7 +8,9 @@ router.get("/", async (req, res) => {
   try {
     console.log("GET /activities - Försöker hämta aktiviteter...");
     
-    const result = await pool.query("SELECT * FROM activities ORDER BY created_at ASC");
+    const result = await pool.query(
+      "SELECT * FROM activities ORDER BY created_at ASC"
+    );
     
     console.log("Antal aktiviteter hämtade:", result.rows.length);
     res.json(result.rows);
@@ -20,13 +22,14 @@ router.get("/", async (req, res) => {
 
 // Lägg till en ny aktivitet med logging
 router.post("/", async (req, res) => {
-  const { title, description, category } = req.body;
+  const { title, description, category, targetGroup } = req.body; // lägg till targetGroup
   try {
-    console.log("POST /activities - Data som skickas:", { title, description, category });
+    console.log("POST /activities - Data som skickas:", { title, description, category, targetGroup });
     
     const result = await pool.query(
-      "INSERT INTO activities (title, description, category) VALUES ($1, $2, $3) RETURNING *",
-      [title, description, category]
+      `INSERT INTO activities (title, description, category, target_group) 
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [title, description, category, targetGroup]
     );
     
     console.log("Ny aktivitet tillagd:", result.rows[0]);
