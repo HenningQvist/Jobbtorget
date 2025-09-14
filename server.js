@@ -5,6 +5,7 @@ import documentsRouter from "./routes/documents.js";
 import workplacesRouter from "./routes/workplaces.js";
 import schedulesRouter from "./routes/schedules.js";
 import activityRoutes from "./routes/activities.js";
+import registrationRouter from "./routes/registrationRouter.js";
 import jobsRouter from "./routes/jobs.js"; 
 import pool from "./db.js"; // importera din databas-pool
 
@@ -63,6 +64,7 @@ app.use("/documents", documentsRouter);
 app.use("/workplaces", workplacesRouter);
 app.use("/schedules", schedulesRouter);
 app.use("/activities", activityRoutes);
+app.use("/register", registrationRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Servern kör på port ${PORT}`);

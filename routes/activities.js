@@ -7,11 +7,11 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     console.log("GET /activities - Försöker hämta aktiviteter...");
-    
+
     const result = await pool.query(
       "SELECT * FROM activities ORDER BY created_at ASC"
     );
-    
+
     console.log("Antal aktiviteter hämtade:", result.rows.length);
     res.json(result.rows);
   } catch (err) {
@@ -22,16 +22,48 @@ router.get("/", async (req, res) => {
 
 // Lägg till en ny aktivitet med logging
 router.post("/", async (req, res) => {
-  const { title, description, category, targetGroup } = req.body; // lägg till targetGroup
+  const {
+    title,
+    description,
+    category,
+    target_group,
+    effort_level,
+    language_level,
+    group_ability,
+    sobriety_requirement,
+    physical_demand,
+  } = req.body;
+
   try {
-    console.log("POST /activities - Data som skickas:", { title, description, category, targetGroup });
-    
+    console.log("POST /activities - Data som skickas:", {
+      title,
+      description,
+      category,
+      target_group,
+      effort_level,
+      language_level,
+      group_ability,
+      sobriety_requirement,
+      physical_demand,
+    });
+
     const result = await pool.query(
-      `INSERT INTO activities (title, description, category, target_group) 
-       VALUES ($1, $2, $3, $4) RETURNING *`,
-      [title, description, category, targetGroup]
+      `INSERT INTO activities 
+      (title, description, category, target_group, effort_level, language_level, group_ability, sobriety_requirement, physical_demand) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+      [
+        title,
+        description,
+        category,
+        target_group,
+        effort_level,
+        language_level,
+        group_ability,
+        sobriety_requirement,
+        physical_demand,
+      ]
     );
-    
+
     console.log("Ny aktivitet tillagd:", result.rows[0]);
     res.json(result.rows[0]);
   } catch (err) {
@@ -45,9 +77,9 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     console.log("DELETE /activities/:id - Försöker ta bort aktivitet med id:", id);
-    
+
     await pool.query("DELETE FROM activities WHERE id = $1", [id]);
-    
+
     console.log("Aktivitet borttagen:", id);
     res.json({ success: true });
   } catch (err) {
