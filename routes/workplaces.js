@@ -116,7 +116,13 @@ router.post("/:workplaceId/departments/:departmentId/schedules", async (req, res
       `INSERT INTO schedules 
        (department_id, person, category, selected_days, hours_per_day)
        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [departmentId, person, category, selected_days, hours_per_day]
+      [
+        departmentId,
+        person,
+        category,
+        JSON.stringify(selected_days),  // <-- stringify här
+        JSON.stringify(hours_per_day)   // <-- stringify här
+      ]
     );
 
     res.json(result.rows[0]);
@@ -135,7 +141,13 @@ router.put("/:workplaceId/departments/:departmentId/schedules/:scheduleId", asyn
     const result = await pool.query(
       `UPDATE schedules SET person=$1, category=$2, selected_days=$3, hours_per_day=$4 
        WHERE id=$5 RETURNING *`,
-      [person, category, selected_days, hours_per_day, scheduleId]
+      [
+        person,
+        category,
+        JSON.stringify(selected_days),  // <-- stringify här
+        JSON.stringify(hours_per_day),  // <-- stringify här
+        scheduleId
+      ]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -143,6 +155,7 @@ router.put("/:workplaceId/departments/:departmentId/schedules/:scheduleId", asyn
     res.status(500).json({ error: "Kunde inte uppdatera schema" });
   }
 });
+
 
 // Ta bort schema
 router.delete("/:workplaceId/departments/:departmentId/schedules/:scheduleId", async (req, res) => {
