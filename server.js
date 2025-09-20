@@ -3,31 +3,27 @@ import cors from "cors";
 import dotenv from "dotenv";
 import documentsRouter from "./routes/documents.js";
 import workplacesRouter from "./routes/workplaces.js";
-import schedulesRouter from "./routes/schedules.js";
 import activityRoutes from "./routes/activities.js";
 import internTipsRouter from "./routes/internTipsRouter.js";
 import registrationRouter from "./routes/registrationRouter.js";
 import jobsRouter from "./routes/jobs.js"; 
-import pool from "./db.js"; // importera din databas-pool
+import pool from "./db.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// -------------------- Middleware --------------------
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // För HTML-formulär
 
-
-// 🟢 Middleware för att tolka urlencoded form data (t.ex. från HTML forms)
-app.use(express.urlencoded({ extended: true }));
-
-// 🔹 Startlogg
+// -------------------- Startlogg --------------------
 console.log("🚀 Startar backend...");
 console.log("🌍 Miljö:", process.env.NODE_ENV || "development");
 console.log("📦 Port:", PORT);
 
-// 🔹 Visa om Railway eller lokala creds används
 if (process.env.DATABASE_URL) {
   console.log("🔗 Använder Railway DATABASE_URL");
 } else {
@@ -40,13 +36,12 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-// 🔹 Testar om servern lever
+// -------------------- Test endpoints --------------------
 app.get("/ping", (req, res) => {
   console.log("📡 /ping anrop mottaget");
   res.json({ message: "✅ Servern svarar!" });
 });
 
-// 🔹 Testar databasanslutning
 app.get("/dbtest", async (req, res) => {
   console.log("📡 /dbtest anrop mottaget");
   try {
@@ -59,15 +54,15 @@ app.get("/dbtest", async (req, res) => {
   }
 });
 
-// Alla requests till /jobs går till jobsRouter
+// -------------------- Routrar --------------------
 app.use("/jobs", jobsRouter);
 app.use("/documents", documentsRouter);
-app.use("/workplaces", workplacesRouter);
-app.use("/schedules", schedulesRouter);
+app.use("/workplaces", workplacesRouter); // inkluderar avdelningar och scheman
 app.use("/activities", activityRoutes);
 app.use("/register", registrationRouter);
 app.use("/intern-tips", internTipsRouter);
 
+// -------------------- Start server --------------------
 app.listen(PORT, () => {
   console.log(`✅ Servern kör på port ${PORT}`);
 });
