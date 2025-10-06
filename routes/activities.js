@@ -3,7 +3,9 @@ import pool from "../db.js";
 
 const router = express.Router();
 
-// Hämta alla aktiviteter med logging
+/* =============================
+   📌 Hämta alla aktiviteter
+============================= */
 router.get("/", async (req, res) => {
   try {
     console.log("GET /activities - Försöker hämta aktiviteter...");
@@ -20,7 +22,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Lägg till en ny aktivitet med logging
+/* =============================
+   ➕ Lägg till ny aktivitet
+============================= */
 router.post("/", async (req, res) => {
   const {
     title,
@@ -28,7 +32,8 @@ router.post("/", async (req, res) => {
     category,
     target_group,
     effort_level,
-    language_level,
+    language_requirement,   // 🆕 nytt fält
+    language_focus,         // 🆕 nytt fält
     group_ability,
     sobriety_requirement,
     physical_demand,
@@ -41,7 +46,8 @@ router.post("/", async (req, res) => {
       category,
       target_group,
       effort_level,
-      language_level,
+      language_requirement,
+      language_focus,
       group_ability,
       sobriety_requirement,
       physical_demand,
@@ -49,22 +55,23 @@ router.post("/", async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO activities 
-      (title, description, category, target_group, effort_level, language_level, group_ability, sobriety_requirement, physical_demand) 
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+      (title, description, category, target_group, effort_level, language_requirement, language_focus, group_ability, sobriety_requirement, physical_demand) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
       [
         title,
         description,
         category,
         target_group,
         effort_level,
-        language_level,
+        language_requirement,
+        language_focus,
         group_ability,
         sobriety_requirement,
         physical_demand,
       ]
     );
 
-    console.log("Ny aktivitet tillagd:", result.rows[0]);
+    console.log("✅ Ny aktivitet tillagd:", result.rows[0]);
     res.json(result.rows[0]);
   } catch (err) {
     console.error("Fel vid tillägg av aktivitet:", err);
@@ -72,7 +79,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Ta bort aktivitet med logging
+/* =============================
+   🗑️ Ta bort aktivitet
+============================= */
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -80,7 +89,7 @@ router.delete("/:id", async (req, res) => {
 
     await pool.query("DELETE FROM activities WHERE id = $1", [id]);
 
-    console.log("Aktivitet borttagen:", id);
+    console.log("🗑️ Aktivitet borttagen:", id);
     res.json({ success: true });
   } catch (err) {
     console.error("Fel vid borttagning av aktivitet:", err);
