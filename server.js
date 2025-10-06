@@ -20,13 +20,25 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // -------------------- Middleware --------------------
-// CORS med credentials och korrekt origin
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://jc2025.netlify.app"   // ✅ Netlify-produktionsdomän
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000", // React frontend
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn("❌ Blockerad CORS-origin:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
