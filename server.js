@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 8080;
 // -------------------- Middleware --------------------
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://jc2025.netlify.app"   // ✅ Netlify-produktionsdomän
+  "https://digitala-jobbtorget.netlify.app/"   // ✅ Netlify-produktionsdomän
 ];
 
 app.use(
