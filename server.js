@@ -6,12 +6,14 @@ import cookieParser from "cookie-parser";
 import documentsRouter from "./routes/documents.js";
 import workplacesRouter from "./routes/workplaces.js";
 import activityRoutes from "./routes/activities.js";
+import coursesRouter from "./routes/courses.js";
+import visitsRouter from "./routes/visits.js";
 import internTipsRouter from "./routes/internTipsRouter.js";
 import registrationRouter from "./routes/registrationRouter.js";
 import authRegisterRouter from "./routes/authRegisterRouter.js";
-import plansRouter from "./routes/plans.js";  // ⬅️ NY
+import plansRouter from "./routes/plans.js";  
 import jobsRouter from "./routes/jobs.js"; 
-import authRouter from "./routes/auth.js";   // JWT login/logout
+import authRouter from "./routes/auth.js";  
 import pool from "./db.js";
 
 dotenv.config();
@@ -82,7 +84,9 @@ app.use("/register", registrationRouter);
 app.use("/intern-tips", internTipsRouter);
 app.use("/auth", authRouter);  
 app.use("/auth/register", authRegisterRouter);
-app.use("/plans", plansRouter);  // ⬅️ NY
+app.use("/plans", plansRouter); 
+app.use("/courses", coursesRouter); 
+app.use("/visits", visitsRouter);
 
 // -------------------- Start server --------------------
 app.listen(PORT, () => {
