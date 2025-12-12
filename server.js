@@ -3,16 +3,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import documentsRouter from "./routes/documents.js";
-import workplacesRouter from "./routes/workplaces.js";
-import activityRoutes from "./routes/activities.js";
-import coursesRouter from "./routes/courses.js";
-import visitsRouter from "./routes/visits.js";
-import internTipsRouter from "./routes/internTipsRouter.js";
 import registrationRouter from "./routes/registrationRouter.js";
 import authRegisterRouter from "./routes/authRegisterRouter.js";
-import plansRouter from "./routes/plans.js";  
-import jobsRouter from "./routes/jobs.js"; 
 import authRouter from "./routes/auth.js";  
 import pool from "./db.js";
 
@@ -24,8 +16,10 @@ const PORT = process.env.PORT || 8080;
 // -------------------- Middleware --------------------
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://digitala-jobbtorget.netlify.app"   // ✅ Netlify-produktionsdomän
+  "https://digitala-jobbtorget.netlify.app",
+  "https://fitpercent.netlify.app",  // ✅ Lägg till denna
 ];
+
 
 app.use(
   cors({
@@ -76,17 +70,11 @@ app.get("/dbtest", async (req, res) => {
 });
 
 // -------------------- Routrar --------------------
-app.use("/jobs", jobsRouter);
-app.use("/documents", documentsRouter);
-app.use("/workplaces", workplacesRouter);
-app.use("/activities", activityRoutes);
+
 app.use("/register", registrationRouter);
-app.use("/intern-tips", internTipsRouter);
 app.use("/auth", authRouter);  
 app.use("/auth/register", authRegisterRouter);
-app.use("/plans", plansRouter); 
-app.use("/courses", coursesRouter); 
-app.use("/visits", visitsRouter);
+
 
 // -------------------- Start server --------------------
 app.listen(PORT, () => {
