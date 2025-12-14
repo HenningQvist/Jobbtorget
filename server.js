@@ -3,9 +3,15 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+
 import registrationRouter from "./routes/registrationRouter.js";
 import authRegisterRouter from "./routes/authRegisterRouter.js";
-import authRouter from "./routes/auth.js";  
+import strengthTestsRouter from "./routes/strengthTestsRouter.js";
+import challengesRouter from "./routes/challengesRouter.js";
+import userProfilesRouter from "./routes/userProfilesRouter.js";
+import cardioRouter from "./routes/cardioRoutes.js"; // ✅ Lägg till denna
+import trainingSessionsRouter from "./routes/trainingSessionsRouter.js";
+import authRouter from "./routes/auth.js";
 import pool from "./db.js";
 
 dotenv.config();
@@ -20,7 +26,6 @@ const allowedOrigins = [
   "https://fitpercent.netlify.app",  // ✅ Lägg till denna
 ];
 
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -34,7 +39,6 @@ app.use(
     credentials: true,
   })
 );
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -70,10 +74,14 @@ app.get("/dbtest", async (req, res) => {
 });
 
 // -------------------- Routrar --------------------
-
 app.use("/register", registrationRouter);
 app.use("/auth", authRouter);  
 app.use("/auth/register", authRegisterRouter);
+app.use("/strength-tests", strengthTestsRouter);
+app.use("/challenges", challengesRouter);
+app.use("/user-profiles", userProfilesRouter);
+app.use("/cardio-tests", cardioRouter); 
+app.use("/training-sessions", trainingSessionsRouter);
 
 
 // -------------------- Start server --------------------
