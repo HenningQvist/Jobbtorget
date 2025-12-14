@@ -39,14 +39,15 @@ router.post("/register", async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 12);
 
     const result = await pool.query(
-      "INSERT INTO users (email, password_hash, role, status) VALUES ($1, $2, $3, 'pending') RETURNING id, email, role, status",
+      // Pausat kravet på coach-godkännande: sätt status direkt till 'active'
+      "INSERT INTO users (email, password_hash, role, status) VALUES ($1, $2, $3, 'active') RETURNING id, email, role, status",
       [email, passwordHash, role]
     );
 
     const newUser = result.rows[0];
 
     res.status(201).json({
-      message: "Registrering mottagen. Väntar på godkännande av coach.",
+      message: "Registrering lyckades. (Tidigare: väntade på godkännande av coach)",
       user: newUser,
     });
   } catch (error) {
@@ -66,9 +67,12 @@ router.post("/login", loginLimiter, async (req, res) => {
 
     if (!user) return res.status(401).json({ error: "Felaktiga inloggningsuppgifter" });
 
-    if (user.status !== "active") {
-      return res.status(403).json({ error: "Konto väntar på godkännande av coach" });
-    }
+    /* -----------------------------------------
+       Pausat krav på coach-godkännande:
+       if (user.status !== "active") {
+         return res.status(403).json({ error: "Konto väntar på godkännande av coach" });
+       }
+       ----------------------------------------- */
 
     const validPassword = await bcrypt.compare(password, user.password_hash);
     if (!validPassword) return res.status(401).json({ error: "Felaktiga inloggningsuppgifter" });
@@ -93,6 +97,8 @@ router.post("/login", loginLimiter, async (req, res) => {
 });
 
 // -------------------- Coach-godkännande --------------------
+// Hela denna route behålls men kan avmarkeras om vi vill pausa den
+/*
 router.put("/approve/:id", authenticate, requireRole("coach"), async (req, res) => {
   const { id } = req.params;
   try {
@@ -111,6 +117,7 @@ router.put("/approve/:id", authenticate, requireRole("coach"), async (req, res) 
     res.status(500).json({ error: "Serverfel vid godkännande" });
   }
 });
+*/
 
 // -------------------- Logout --------------------
 router.post("/logout", (req, res) => {
