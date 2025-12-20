@@ -24,6 +24,7 @@ router.get("/:userId", async (req, res) => {
         reps: row.reps,
         weight: row.weight,
         created_at: row.created_at,
+        pi: row.pi || 0, // inkludera PI i response
       });
     });
 
@@ -34,7 +35,6 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// -------------------- Hämta passmallar för en användare --------------------
 // -------------------- Hämta passmallar för en användare --------------------
 router.get("/templates/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -65,11 +65,9 @@ router.get("/templates/:userId", async (req, res) => {
   }
 });
 
-
-
 // -------------------- Spara genomfört pass --------------------
 router.post("/", async (req, res) => {
-  const { userId, workoutName, exercises } = req.body;
+  const { userId, workoutName, exercises, pi = 10 } = req.body; // PI default 10
 
   if (!userId || !workoutName || !Array.isArray(exercises) || exercises.length === 0) {
     return res.status(400).json({ error: "Saknade obligatoriska fält" });
@@ -80,10 +78,19 @@ router.post("/", async (req, res) => {
       const { exercise_name, set_number, reps, weight, created_at } = ex;
       return pool.query(
         `INSERT INTO training_sessions 
-         (user_id, workout_name, exercise_name, set_number, reps, weight, created_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7)
+         (user_id, workout_name, exercise_name, set_number, reps, weight, created_at, pi)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
          RETURNING *`,
-        [userId, workoutName, exercise_name, set_number, reps, weight, created_at || new Date().toISOString()]
+        [
+          userId,
+          workoutName,
+          exercise_name,
+          set_number,
+          reps,
+          weight,
+          created_at || new Date().toISOString(),
+          pi, // spara PI
+        ]
       );
     });
 

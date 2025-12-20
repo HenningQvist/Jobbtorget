@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
 
     // Skicka tillbaka svar utan token
     res.status(201).json({
-      message: "Registrering mottagen. Väntar på godkännande av coach.",
+      message: "Registrering mottagen. Väntar på godkännande av admin.",
       user: newUser.rows[0],
     });
   } catch (err) {
