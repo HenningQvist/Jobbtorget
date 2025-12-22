@@ -17,8 +17,9 @@ router.get("/all", async (req, res) => {
         pi.user_id,
         pi.exercise,
         pi.profile,
-        pi.result,   -- 👈 faktiska reps / kg / sek
-        pi.pi,       -- 👈 beräknat PI
+        pi.result,
+        pi.pi,
+        pi.category,
         pi.created_at,
         up.name,
         up.avatar
@@ -54,6 +55,7 @@ router.get("/:user_id", async (req, res) => {
         pi.profile,
         pi.result,
         pi.pi,
+        pi.category,
         pi.created_at,
         up.name,
         up.avatar
@@ -75,25 +77,27 @@ router.get("/:user_id", async (req, res) => {
 
 /**
  * --------------------
- * 3️⃣ Spara nytt PI-resultat
+ * 3️⃣ Spara nytt PI-resultat med kategori och timestamp
  * --------------------
  */
 router.post("/", async (req, res) => {
   console.log("📥 POST /pi body:", req.body);
 
-  const { user_id, exercise, profile, result, pi } = req.body;
+  const { user_id, exercise, profile, result, pi, category } = req.body;
 
   if (!user_id || !exercise || !profile || result == null || pi == null) {
     console.log("❌ Ogiltig data");
     return res.status(400).json({ message: "Ogiltig data" });
   }
 
+  const created_at = new Date().toISOString();
+
   try {
     const { rows } = await pool.query(
-      `INSERT INTO pi_results (user_id, exercise, profile, result, pi)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO pi_results (user_id, exercise, profile, result, pi, category, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [user_id, exercise, profile, result, pi]
+      [user_id, exercise, profile, result, pi, category || "Other", created_at]
     );
 
     res.status(201).json(rows[0]);
@@ -102,8 +106,5 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "Kunde inte spara PI-resultat" });
   }
 });
-
-
-
 
 export default router;
