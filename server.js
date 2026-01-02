@@ -12,6 +12,8 @@ import userProfilesRouter from "./routes/userProfilesRouter.js";
 import cardioRouter from "./routes/cardioRoutes.js"; // ✅ Lägg till denna
 import trainingSessionsRouter from "./routes/trainingSessionsRouter.js";
 import piRouter from "./routes/piRouter.js"; // ✅ Ny router för PI-resultat
+import competitionRouter from "./routes/competition.js";
+
 
 import authRouter from "./routes/auth.js";
 import pool from "./db.js";
@@ -85,7 +87,7 @@ app.use("/user-profiles", userProfilesRouter);
 app.use("/cardio-tests", cardioRouter); 
 app.use("/training-sessions", trainingSessionsRouter);
 app.use("/pi", piRouter);
-
+app.use("/competition", competitionRouter);
 
 // -------------------- Start server --------------------
 app.listen(PORT, () => {
