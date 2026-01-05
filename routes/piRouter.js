@@ -106,5 +106,55 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "Kunde inte spara PI-resultat" });
   }
 });
+/**
+ * 🏆 Spara bonus PI per nivå (EN GÅNG)
+ */
+router.post("/bonus", async (req, res) => {
+  const { user_id, level, pi } = req.body;
+
+  console.log("🎁 Bonus-PI request:", req.body);
+
+  if (!user_id || !level || !pi) {
+    return res.status(400).json({ message: "Ogiltig bonus-data" });
+  }
+
+  try {
+    // 🔍 Finns bonus redan?
+    const existing = await pool.query(
+      `
+      SELECT id FROM pi_results
+      WHERE user_id = $1
+        AND exercise = 'Training DNA'
+        AND profile = $2
+        AND category = 'Bonus'
+      `,
+      [user_id, level]
+    );
+
+    if (existing.rows.length > 0) {
+      console.log("⏭️ Bonus redan utdelad");
+      return res.json({ skipped: true });
+    }
+
+    // 💾 Spara bonus
+    const { rows } = await pool.query(
+      `
+      INSERT INTO pi_results
+        (user_id, exercise, profile, result, pi, category, created_at)
+      VALUES
+        ($1, 'Training DNA', $2, 100, $3, 'Bonus', NOW())
+      RETURNING *
+      `,
+      [user_id, level, pi]
+    );
+
+    console.log("🎉 Bonus sparad:", rows[0]);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error("❌ Bonus-PI fel:", err.message);
+    res.status(500).json({ message: "Kunde inte spara bonus PI" });
+  }
+});
+
 
 export default router;
